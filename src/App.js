@@ -2,6 +2,7 @@ import style from './App.module.css';
 import { useState } from 'react';
 
 export default function App() {
+	const [screenStyle, setScreenStyle] = useState({ color: '#0f0' });
 	const [screenShow, setScreenShow] = useState('0');
 	const [currentOperator, setCurrentOperator] = useState(null);
 	const [storedValue, setStoredValue] = useState(null);
@@ -38,17 +39,25 @@ export default function App() {
 	};
 
 	const screen = (
-		<input value={screenShow} className={style.screen} type="text" readOnly></input>
+		<input
+			value={screenShow}
+			style={screenStyle}
+			className={style.screen}
+			type="text"
+			readOnly
+		></input>
 	);
 
 	const onClick = (value) => {
 		if (value === 'C') {
 			setScreenShow('0');
+			setScreenStyle({ color: '#0f0' });
 			setCurrentOperator(null);
 			setStoredValue(null);
 		} else if (value === '=') {
 			if (currentOperator && storedValue !== null) {
 				const result = calculateResult(storedValue, screenShow, currentOperator);
+				setScreenStyle({ color: 'blue' });
 				setScreenShow(String(result));
 				setCurrentOperator(null);
 				setStoredValue(null);
@@ -58,9 +67,12 @@ export default function App() {
 			setScreenShow('0');
 			setCurrentOperator(value);
 		} else {
-			setScreenShow((prevValue) =>
-				prevValue === '0' ? String(value) : prevValue + String(value),
-			);
+			setScreenShow((prevValue) => {
+				const newValue =
+					prevValue === '0' ? String(value) : prevValue + String(value);
+				setScreenStyle({ color: '#0f0' });
+				return newValue;
+			});
 		}
 	};
 
